@@ -6,6 +6,7 @@ export class Name {
     private components: string[] = [];
     private delimiter: string = this.DEFAULT_DELIMITER;
 
+    //Kontruktor
     constructor(other: string[], delimiter?: string) {
 
         this.components = other;
@@ -15,6 +16,7 @@ export class Name {
         }
     }
 
+    
     public asNameString(delimiter: string = this.delimiter): string {
         let result = "";
         for (let comp of this.components){
@@ -25,14 +27,17 @@ export class Name {
         return result;
     }
 
+    //Getter
     public getComponent(i: number): string {
         return this.components[i]; 
     }
 
+    //Setter
     public setComponent(i: number, c: string): void {
         this.components[i] = c;
     }
 
+    //Getter
     public getNoComponents(): number {
         return this.components.length;
     }
