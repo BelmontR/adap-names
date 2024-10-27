@@ -6,7 +6,7 @@ export class Name {
     private components: string[] = [];
     private delimiter: string = this.DEFAULT_DELIMITER;
 
-    //Kontruktor
+    //@methodtype contructor
     constructor(other: string[], delimiter?: string) {
 
         this.components = other;
@@ -16,7 +16,7 @@ export class Name {
         }
     }
 
-    
+    //@methodtype query
     public asNameString(delimiter: string = this.delimiter): string {
         let result = "";
         for (let comp of this.components){
@@ -27,29 +27,32 @@ export class Name {
         return result;
     }
 
-    //Getter
+    //@methodtype get-method
     public getComponent(i: number): string {
         return this.components[i]; 
     }
 
-    //Setter
+    //@methodtype set-method
     public setComponent(i: number, c: string): void {
         this.components[i] = c;
     }
 
-    //Getter
+    //@methodtype get-method
     public getNoComponents(): number {
         return this.components.length;
     }
 
+    //@methodtype command-method
     public insert(i: number, c: string): void {
         this.components.splice(i, 0, c);
     }
 
-    public append(c: string): void {
+    //@methodtype command-method
+    public append(c: string): void { 
         this.components.push(c);
     }
 
+    //@methodtype remove-method
     public remove(i: number): void {
         this.components.splice(i,1);
     }
