@@ -52,7 +52,7 @@ export class Name {
         this.components.push(c);
     }
 
-    //@methodtype remove-method
+    //@methodtype remove-command-method
     public remove(i: number): void {
         this.components.splice(i,1);
     }
