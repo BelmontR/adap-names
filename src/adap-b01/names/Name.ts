@@ -16,7 +16,7 @@ export class Name {
         }
     }
 
-    //@methodtype query
+    //@methodtype conversion method
     public asNameString(delimiter: string = this.delimiter): string {
         let result = "";
         for (let comp of this.components){
