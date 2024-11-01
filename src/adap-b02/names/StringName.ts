@@ -14,7 +14,7 @@ export class StringName implements Name {
             this.delimiter = delimiter;
         }
 
-        length = 1;
+        this.length = 1;
         let escapeFlag = false;
         for(let i = 0; i < other.length; i++){
             if(!escapeFlag && other[i] == ESCAPE_CHARACTER){
@@ -61,7 +61,7 @@ export class StringName implements Name {
             }
         }
 
-    return dataString;
+        return dataString;
     }   
 
     public isEmpty(): boolean {
@@ -92,7 +92,7 @@ export class StringName implements Name {
     }
 
     public getComponent(x: number): string {
-        let counter = 1;
+        let counter = 0;
         let returnString = "";
         let escapeFlag = false;
 
@@ -122,7 +122,7 @@ export class StringName implements Name {
 
     public setComponent(n: number, c: string): void {
 
-        let counter = 1;
+        let counter = 0;
         let prefix = "";
         let suffix = "";
         let escapeFlag = false;
@@ -151,7 +151,7 @@ export class StringName implements Name {
     }
 
     public insert(n: number, c: string): void {
-        let counter = 1;
+        let counter = 0;
         let prefix = "";
         let suffix = "";
         let escapeFlag = false;
@@ -176,7 +176,7 @@ export class StringName implements Name {
             }
         }
 
-        this.name = prefix + this.delimiter + c + this.delimiter + suffix;
+        this.name = prefix + this.delimiter + c + suffix;
     }
 
     public append(c: string): void {
@@ -185,12 +185,21 @@ export class StringName implements Name {
     }
 
     public remove(n: number): void {
-        let counter = 1;
+        let counter = 0;
         let prefix = "";
         let suffix = "";
         let escapeFlag = false;
 
+        let deleteLastChar = (n == (this.getNoComponents() -1));
+
         for(let i = 0; i < this.name.length; i++){
+
+            if(counter < n){
+                prefix += this.name[i];
+            }
+            else if(counter > n){
+                suffix += this.name[i];
+            }
 
             if(!escapeFlag && this.name[i] == ESCAPE_CHARACTER){
                 escapeFlag = true;
@@ -201,16 +210,13 @@ export class StringName implements Name {
             else if(escapeFlag){
                 escapeFlag = false;
             }
-
-            if(counter < n){
-                prefix += this.name[i];
-            }
-            else if(counter > n){
-                suffix += this.name[i];
-            }
         }
 
-        this.name = prefix + this.delimiter + suffix;
+        this.name = prefix + suffix;
+
+        if(deleteLastChar){
+            this.name = this.name.substring(0, this.name.length - 1);
+        }
     }
 
     public concat(other: Name): void {

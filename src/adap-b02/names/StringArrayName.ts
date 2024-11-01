@@ -6,51 +6,71 @@ export class StringArrayName implements Name {
     protected delimiter: string = DEFAULT_DELIMITER;
 
     constructor(other: string[], delimiter?: string) {
-        throw new Error("needs implementation");
+        this.components = other;
+        if(delimiter){
+            this.delimiter = delimiter;
+        }
     }
 
     public asString(delimiter: string = this.delimiter): string {
-        throw new Error("needs implementation");
+        let result = "";
+        for (let comp of this.components){
+            result += comp;
+            result += delimiter;
+        }
+        result = result.slice(0,-1); //Entfernt den letzten Punkt
+        return result;
     }
 
     public asDataString(): string {
-        throw new Error("needs implementation");
+        let result = "";
+        for (let comp of this.components){
+            result += comp;
+            result += DEFAULT_DELIMITER;
+        }
+        result = result.slice(0,-1); //Entfernt den letzten Punkt
+        return result;
     }
 
     public isEmpty(): boolean {
-        throw new Error("needs implementation");
+        return (this.components.length <= 0);
     }
 
     public getDelimiterCharacter(): string {
-        throw new Error("needs implementation");
+        return this.delimiter;
     }
 
     public getNoComponents(): number {
-        throw new Error("needs implementation");
+        return this.components.length;
     }
 
     public getComponent(i: number): string {
-        throw new Error("needs implementation");
+        return this.components[i];
     }
 
     public setComponent(i: number, c: string): void {
-        throw new Error("needs implementation");
+        this.components[i] = c;
     }
 
     public insert(i: number, c: string): void {
-        throw new Error("needs implementation");
+        this.components.splice(i, 0, c);
     }
 
-    public append(c: string): void {
-        throw new Error("needs implementation");
+    public append(c: string): void { 
+        this.components.push(c);
     }
 
     public remove(i: number): void {
-        throw new Error("needs implementation");
+        this.components.splice(i,1);
     }
 
     public concat(other: Name): void {
-        throw new Error("needs implementation");
+        let numComps = other.getNoComponents();
+        let i = 0;
+        while(i < numComps){
+            let newC = other.getComponent(i);
+            this.append(newC);
+        }
     }
 
 }

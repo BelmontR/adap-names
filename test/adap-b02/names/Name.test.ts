@@ -20,6 +20,16 @@ describe("Basic StringName function tests", () => {
     n.remove(0);
     expect(n.asString()).toBe("cs.fau.de");
   });
+  it("test remove2", () => {
+    let n: Name = new StringName("oss.cs.fau.de");
+    n.remove(1);
+    expect(n.asString()).toBe("oss.fau.de");
+  });
+  it("test remove3", () => {
+    let n: Name = new StringName("oss.cs.fau.de");
+    n.remove(3);
+    expect(n.asString()).toBe("oss.cs.fau");
+  });
 });
 
 describe("Basic StringArrayName function tests", () => {
