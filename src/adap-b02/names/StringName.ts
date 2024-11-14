@@ -177,6 +177,7 @@ export class StringName implements Name {
         }
 
         this.name = prefix + this.delimiter + c + suffix;
+        this.length ++;
     }
 
     public append(c: string): void {
@@ -217,6 +218,7 @@ export class StringName implements Name {
         if(deleteLastChar){
             this.name = this.name.substring(0, this.name.length - 1);
         }
+        this.length --;
     }
 
     public concat(other: Name): void {
