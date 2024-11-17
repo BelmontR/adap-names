@@ -49,19 +49,19 @@ export abstract class AbstractName implements Name {
     }
 
     public getHashCode(): number {
-        let hash = 0;
+        let hashCode = 0;
+        let s = this.asDataString();
 
-        for(let i = 0; i < this.getNoComponents(); i++){
-            for(let n = 0; n < this.getComponent(i).length; n++){
-                hash = (31 * hash) + this.getComponent(i).charCodeAt(n);
-            }
+        for (let i = 0; i < s.length; i++) {
+            let c = s.charCodeAt(i);
+            hashCode = (hashCode << 5) - hashCode + c;
+            hashCode |= 0;
         }
-
-        return hash;
+        return hashCode;
     }
 
     public clone(): Name {
-        return this.doClone();
+        return { ...this };
     }
 
     public isEmpty(): boolean {
@@ -80,8 +80,6 @@ export abstract class AbstractName implements Name {
     abstract insert(i: number, c: string): void;
     abstract append(c: string): void;
     abstract remove(i: number): void;
-
-    abstract doClone(): Name;
 
     public concat(other: Name): void {
         for(let i = 0; i < other.getNoComponents(); i++){
