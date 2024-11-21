@@ -163,10 +163,4 @@ export class StringName extends AbstractName {
 
         this.length --;
     }
-
-    public clone(): Name{
-        super.clone();
-        let clone = new StringName(this.name, this.delimiter);
-        return clone;
-    }
 }
