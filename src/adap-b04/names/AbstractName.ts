@@ -103,6 +103,9 @@ export abstract class AbstractName implements Name {
         if(this.getNoComponents() !== oldLen){
             throw new MethodFailureException("Postcondition failed: Number of components changed altough it should not")
         }
+
+        //Class invariants
+        this.assertClassInvarinats();
     }
 
     public insert(i:number, c: string): void{
@@ -118,6 +121,9 @@ export abstract class AbstractName implements Name {
         //Postconditions
         this.assertValueAtIndex(i, c);
         this.assertNumberComponentIncreased(oldLen);
+
+        //Class invariants
+        this.assertClassInvarinats();
     }
 
     public append(c: string): void{
@@ -132,6 +138,9 @@ export abstract class AbstractName implements Name {
 
         this.assertValueAtIndex(lastIndex, c);
         this.assertNumberComponentIncreased(oldLen);
+
+                //Class invariants
+                this.assertClassInvarinats();
     }
 
     public remove(i: number): void{
@@ -149,6 +158,8 @@ export abstract class AbstractName implements Name {
             throw new IllegalArgumentException("Postcondition failed: Number of components did not decrease");
         }
 
+        //Class invariants
+        this.assertClassInvarinats();
     }
 
 
@@ -176,6 +187,8 @@ export abstract class AbstractName implements Name {
         if(oldLen != this.getNoComponents()){
             throw new IllegalArgumentException("Postcondition failed: Concat name has not the number of components as both names together");
         }
+
+        this.assertClassInvarinats();
     }
 
     protected assertIsNotNullOrUndefined(other: Object): void {
@@ -205,6 +218,32 @@ export abstract class AbstractName implements Name {
     protected assertInBounds(index: number): void{
         if(this.getNoComponents() <= index){
             throw new MethodFailureException("Index out of bounds");
+        }
+    }
+
+    protected assertClassInvarinats(): void{
+        if((this.delimiter == null) || (this.delimiter == undefined)){
+            throw new InvalidStateException("Delimiter is null or not defined");
+        }
+
+        if(this.delimiter == ""){
+            throw new InvalidStateException("Delimiter can't be empty");
+        }
+
+        if(this.getNoComponents() < 0){
+            throw new InvalidStateException("Number of components can't be negative");
+        }
+
+        for(let i = 0; i < this.getNoComponents(); i++){
+            try{
+                let comp = this.getComponent(i);
+                if ((comp == null) || (comp == undefined)) {
+                    throw new InvalidStateException("Component at index ${i} is null or undefined");
+                }
+            }
+            catch(e){
+                throw new InvalidStateException("Can't access Component at index ${i}");
+            }
         }
     }
 

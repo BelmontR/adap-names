@@ -1,6 +1,7 @@
 import { DEFAULT_DELIMITER, ESCAPE_CHARACTER } from "../common/Printable";
 import { Name } from "./Name";
 import { AbstractName } from "./AbstractName";
+import { InvalidStateException } from "../common/InvalidStateException";
 
 export class StringArrayName extends AbstractName {
 
@@ -68,5 +69,13 @@ export class StringArrayName extends AbstractName {
 
     public concat(other: Name): void {
         super.concat(other);
+    }
+
+    protected assertClassInvarinats(): void{
+        super.assertClassInvarinats();
+
+        if(this.getNoComponents() !== this.components.length){
+            throw new InvalidStateException("Number of components is not equal to components.length");
+        }
     }
 }
