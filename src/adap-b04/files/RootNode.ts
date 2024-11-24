@@ -20,10 +20,12 @@ export class RootNode extends Directory {
     }
 
     public move(to: Directory): void {
+        this.assertIsNotNullOrUndefined(to);
         // null operation
     }
 
     protected doSetBaseName(bn: string): void {
+        this.assertIsNotNullOrUndefined(bn);
         // null operation
     }
 
