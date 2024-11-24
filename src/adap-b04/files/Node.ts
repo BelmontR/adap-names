@@ -1,5 +1,6 @@
 import { Name } from "../names/Name";
 import { Directory } from "./Directory";
+import { IllegalArgumentException  } from "../common/IllegalArgumentException";
 
 export class Node {
 
@@ -7,11 +8,17 @@ export class Node {
     protected parentNode: Directory;
 
     constructor(bn: string, pn: Directory) {
+        this.assertIsNotNullOrUndefined(bn);
+        this.assertNameNotEmpty(bn);
+        this.assertIsNotNullOrUndefined(pn);
+
         this.doSetBaseName(bn);
         this.parentNode = pn;
     }
 
     public move(to: Directory): void {
+        this.assertIsNotNullOrUndefined(to);
+        
         this.parentNode.remove(this);
         to.add(this);
     }
@@ -31,6 +38,9 @@ export class Node {
     }
 
     public rename(bn: string): void {
+        this.assertIsNotNullOrUndefined(bn);
+        this.assertNameNotEmpty(bn);
+
         this.doSetBaseName(bn);
     }
 
@@ -40,6 +50,18 @@ export class Node {
 
     public getParentNode(): Node {
         return this.parentNode;
+    }
+
+    protected assertIsNotNullOrUndefined(other: Object): void {
+        if ((other == null) || (other == undefined)) {
+            throw new IllegalArgumentException("Precondition failed: Value is undefined");
+        }
+    }
+
+    protected assertNameNotEmpty(name: string): void {
+        if(name == ""){
+            throw new IllegalArgumentException("Precondition failed: Directory's name is empty");
+        }
     }
 
 }

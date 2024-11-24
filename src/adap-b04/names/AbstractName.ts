@@ -6,6 +6,9 @@ import { MethodFailureException } from "../common/MethodFailureException";
 import { InvalidStateException } from "../common/InvalidStateException";
 import { Exception } from "../common/Exception";
 
+//Ich hab jetzt die Assertion-Methoden in diese Klasse geschrieben, da sie in den Folien und im Coordinate-Beispiel auch in den verwendenden Klassen implementiert waren.
+//Ich hoffe, das passt
+
 export abstract class AbstractName implements Name {
 
     protected delimiter: string = DEFAULT_DELIMITER;

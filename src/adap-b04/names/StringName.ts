@@ -17,7 +17,7 @@ export class StringName extends AbstractName {
             if(!escapeFlag && other[i] == ESCAPE_CHARACTER){
                 escapeFlag = true;
             }
-            else if(!escapeFlag && other[i] == delimiter){
+            else if(!escapeFlag && other[i] == this.delimiter){
                 this.noComponents ++;
             }
             else if(escapeFlag){
@@ -76,6 +76,7 @@ export class StringName extends AbstractName {
             }
             else if(!escapeFlag && this.name[i] == this.delimiter){
                 counter ++;
+                continue; //delimiter ist kein Teil der Component
             }
             else if(escapeFlag){
                 escapeFlag = false;
