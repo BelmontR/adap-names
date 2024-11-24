@@ -4,6 +4,7 @@ import { Name } from "./Name";
 import { IllegalArgumentException  } from "../common/IllegalArgumentException";
 import { MethodFailureException } from "../common/MethodFailureException";
 import { InvalidStateException } from "../common/InvalidStateException";
+import { Exception } from "../common/Exception";
 
 export abstract class AbstractName implements Name {
 
@@ -93,15 +94,19 @@ export abstract class AbstractName implements Name {
         this.assertInBounds(i);
         this.assertIsNotNullOrUndefined(c);
 
-        this.doSetComponent(i, c);
-
+        let clone = this.clone();
         let oldLen = this.getNoComponents();
 
+        this.doSetComponent(i, c);
+
+        //"The method should return the object to its method-entry state" -> Wird hier gemacht
+        try{
         //Postconditions
         this.assertValueAtIndex(i, c);
-
-        if(this.getNoComponents() !== oldLen){
-            throw new MethodFailureException("Postcondition failed: Number of components changed altough it should not")
+        this.assertNumberComponentsDontChange(oldLen);
+        }
+        catch(e){
+            this.restoreValidState(clone);
         }
 
         //Class invariants
@@ -115,12 +120,18 @@ export abstract class AbstractName implements Name {
         this.assertIsNotNullOrUndefined(c);
 
         let oldLen = this.getNoComponents();
+        let clone = this.clone();
 
         this.doInsert(i,c);
 
+        try{
         //Postconditions
         this.assertValueAtIndex(i, c);
         this.assertNumberComponentIncreased(oldLen);
+        }
+        catch(e){
+            this.restoreValidState(clone);
+        }
 
         //Class invariants
         this.assertClassInvarinats();
@@ -130,17 +141,23 @@ export abstract class AbstractName implements Name {
         this.assertIsNotNullOrUndefined(c);
 
         let oldLen = this.getNoComponents();
+        let clone = this.clone();
 
         this.doAppend(c);
 
+        try{
         //Postconditions
         let lastIndex = this.getNoComponents() -1;
 
         this.assertValueAtIndex(lastIndex, c);
         this.assertNumberComponentIncreased(oldLen);
+        }
+        catch(e){
+            this.restoreValidState(clone);
+        }
 
-                //Class invariants
-                this.assertClassInvarinats();
+        //Class invariants
+        this.assertClassInvarinats();
     }
 
     public remove(i: number): void{
@@ -148,14 +165,18 @@ export abstract class AbstractName implements Name {
         this.assertIsNotNegative(i);
         this.assertInBounds(i);
 
+        let clone = this.clone();
         let oldLen = this.getNoComponents();
 
 
         this.doRemove(i);
 
+        try{
         //Postconditions
-        if(oldLen <= this.getNoComponents()){
-            throw new IllegalArgumentException("Postcondition failed: Number of components did not decrease");
+        this.assertNumberComponentsDecreased(oldLen);
+        }
+        catch(e){
+            this.restoreValidState(clone);
         }
 
         //Class invariants
@@ -179,45 +200,78 @@ export abstract class AbstractName implements Name {
         this.assertIsNotNullOrUndefined(other);
 
         let oldLen = this.getNoComponents() + other.getNoComponents();
+        let clone = this.clone();
 
         for(let i = 0; i < other.getNoComponents(); i++){
             this.append(other.getComponent(i));
         }
 
-        if(oldLen != this.getNoComponents()){
-            throw new IllegalArgumentException("Postcondition failed: Concat name has not the number of components as both names together");
+        try{
+            //Postcondition
+            this.assertNumberComponentsDontChange(oldLen);
+        }
+        catch(e){
+            this.restoreValidState(clone);
         }
 
         this.assertClassInvarinats();
     }
 
+    protected restoreValidState(clone: Name){
+        this.delimiter = clone.getDelimiterCharacter();
+
+        while (this.getNoComponents() > 0) {
+            this.remove(0);
+        }
+
+        for (let i = 0; i < clone.getNoComponents(); i++) {
+            this.append(clone.getComponent(i));
+        }
+    }
+
     protected assertIsNotNullOrUndefined(other: Object): void {
         if ((other == null) || (other == undefined)) {
-            throw new IllegalArgumentException("Value is undefined");
+            throw new IllegalArgumentException("Precondition failed: Value is undefined");
         }
     }
 
     protected assertIsNotNegative(other: number): void {
         if (other < 0) {
-            throw new IllegalArgumentException("Value is negative");
+            throw new IllegalArgumentException("Precondiion failed: Value is negative");
+        }
+    }
+
+    protected assertInBounds(index: number): void{
+        if(this.getNoComponents() <= index){
+            throw new MethodFailureException("Precondition failed: Index out of bounds");
         }
     }
 
     protected assertValueAtIndex(index: number, value: string): void{
         if(this.getComponent(index) !== value){
+            console.log("Postcondition failed: Component at index ${i} was not set to the expected value");
             throw new MethodFailureException("Postcondition failed: Component at index ${i} was not set to the expected value");
         }
     }
 
     protected assertNumberComponentIncreased(oldNum: number): void{
         if(this.getNoComponents() <= oldNum){
+            console.log("Postcondition failed: Number of Components did not increase although it should");
             throw new MethodFailureException("Postcondition failed: Number of Components did not increase although it should");
         }
     }
 
-    protected assertInBounds(index: number): void{
-        if(this.getNoComponents() <= index){
-            throw new MethodFailureException("Index out of bounds");
+    protected assertNumberComponentsDecreased(oldLen: number): void{
+        if(oldLen <= this.getNoComponents()){
+            console.log("Postcondition failed: Number of components did not decrease");
+            throw new IllegalArgumentException("Postcondition failed: Number of components did not decrease");
+        }
+    }
+
+    protected assertNumberComponentsDontChange(oldLen: number): void{   
+        if(this.getNoComponents() !== oldLen){
+            console.log("Postcondition failed: Number of components changed altough it should not");
+            throw new MethodFailureException("Postcondition failed: Number of components changed altough it should not")
         }
     }
 
@@ -246,6 +300,5 @@ export abstract class AbstractName implements Name {
             }
         }
     }
-
 
 }
