@@ -3,6 +3,7 @@ import { ExceptionType, AssertionDispatcher } from "../common/AssertionDispatche
 import { Name } from "../names/Name";
 import { StringName } from "../names/StringName";
 import { Directory } from "./Directory";
+import { Node } from "./Node";
 
 export class RootNode extends Directory {
 
@@ -36,5 +37,16 @@ export class RootNode extends Directory {
         const condition: boolean = (bn == ""); // Root must have "" as base name
         AssertionDispatcher.dispatch(et, condition, "invalid base name");
     }
+
+    public findNodes(bn: string): Set<Node>{
+        this.assertIsValidBaseName(bn, ExceptionType.PRECONDITION);
+
+        let resultSet = new Set<Node>();
+        this.findNodesHelper(bn, resultSet);
+
+        return resultSet;
+    }
+
+
 
 }

@@ -30,6 +30,9 @@ export class File extends Node {
         return this.state;
     }
 
+    /*
+    Ist keine Precondition, sondern eine Invariante (?). Also von der Logik her, daher auskommentiert
+
     protected assertInCorrectStateWhenOpen(): void{
         if(this.doGetFileState() !== FileState.CLOSED){
             throw new IllegalArgumentException("Precondition failed: Can't call open() when File is not closed.");
@@ -41,5 +44,6 @@ export class File extends Node {
             throw new IllegalArgumentException("Precondition failed: Can't call close() when File is not open.");
         }
     }
+        */
 
 }

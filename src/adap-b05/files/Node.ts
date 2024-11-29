@@ -4,6 +4,7 @@ import { InvalidStateException } from "../common/InvalidStateException";
 
 import { Name } from "../names/Name";
 import { Directory } from "./Directory";
+import { RootNode } from "./RootNode";
 
 export class Node {
 
@@ -58,7 +59,12 @@ export class Node {
      * @param bn basename of node being searched for
      */
     public findNodes(bn: string): Set<Node> {
-        throw new Error("needs implementation or deletion");
+        return RootNode.getRootNode().findNodes(bn);
+    }
+
+    //Has to be overwritten
+    public findNodesHelper(bn: string, currentSet: Set<Node>){
+
     }
 
     protected assertClassInvariants(): void {
