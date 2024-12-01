@@ -1,6 +1,7 @@
 import { DEFAULT_DELIMITER, ESCAPE_CHARACTER } from "../common/Printable";
 import { Name } from "./Name";
 import { AbstractName } from "./AbstractName";
+import { InvalidStateException } from "../common/InvalidStateException";
 
 export class StringArrayName extends AbstractName {
 
@@ -8,62 +9,73 @@ export class StringArrayName extends AbstractName {
 
     constructor(other: string[], delimiter?: string) {
         super();
-        throw new Error("needs implementation or deletion");
+        this.components = other;
     }
 
     public clone(): Name {
-        throw new Error("needs implementation or deletion");
+        return new StringArrayName(this.components, this.delimiter);
     }
 
     public asString(delimiter: string = this.delimiter): string {
-        throw new Error("needs implementation or deletion");
+        return super.asString(delimiter);
+    }
+
+    public toString(): string {
+        return super.toString();
     }
 
     public asDataString(): string {
-        throw new Error("needs implementation or deletion");
+        return super.asDataString();
     }
 
     public isEqual(other: Name): boolean {
-        throw new Error("needs implementation or deletion");
+        return super.isEqual(other);
     }
 
     public getHashCode(): number {
-        throw new Error("needs implementation or deletion");
+        return super.getHashCode();
     }
 
     public isEmpty(): boolean {
-        throw new Error("needs implementation or deletion");
+        return super.isEmpty();
     }
 
     public getDelimiterCharacter(): string {
-        throw new Error("needs implementation or deletion");
+        return super.getDelimiterCharacter();
     }
 
     public getNoComponents(): number {
-        throw new Error("needs implementation or deletion");
+        return this.components.length;
     }
 
-    public getComponent(i: number): string {
-        throw new Error("needs implementation or deletion");
+    public doGetComponent(i: number): string {
+        return this.components[i];
+    }
+    public doSetComponent(i: number, c: string) {
+        this.components[i] = c;
     }
 
-    public setComponent(i: number, c: string) {
-        throw new Error("needs implementation or deletion");
+    public doInsert(i: number, c: string) {
+        this.components.splice(i, 0, c);
     }
 
-    public insert(i: number, c: string) {
-        throw new Error("needs implementation or deletion");
+    public doAppend(c: string) {
+        this.components.push(c);
     }
 
-    public append(c: string) {
-        throw new Error("needs implementation or deletion");
-    }
-
-    public remove(i: number) {
-        throw new Error("needs implementation or deletion");
+    public doRemove(i: number) {
+        this.components.splice(i,1);
     }
 
     public concat(other: Name): void {
-        throw new Error("needs implementation or deletion");
+        super.concat(other);
+    }
+
+    protected assertClassInvarinats(): void{
+        super.assertClassInvarinats();
+
+        if(this.getNoComponents() !== this.components.length){
+            throw new InvalidStateException("Number of components is not equal to components.length");
+        }
     }
 }

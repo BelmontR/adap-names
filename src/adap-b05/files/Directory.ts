@@ -1,4 +1,5 @@
 import { Node } from "./Node";
+import { ExceptionType, AssertionDispatcher } from "../common/AssertionDispatcher";
 
 export class Directory extends Node {
 
@@ -14,6 +15,26 @@ export class Directory extends Node {
 
     public remove(cn: Node): void {
         this.childNodes.delete(cn); // Yikes! Should have been called remove
+    }
+
+
+    public findNodes(bn: string): Set<Node>{
+        //this.assertIsValidBaseName(bn, ExceptionType.PRECONDITION);
+
+        let resultSet = new Set<Node>();
+        this.findNodesHelper(bn, resultSet);
+
+        return resultSet;
+    }
+    
+    public findNodesHelper(bn: string, currentSet: Set<Node>){
+        if(this.getBaseName() == bn){
+            currentSet.add(this);
+        }
+        for(var child of this.childNodes.values()){
+            child.findNodesHelper(bn, currentSet);
+        }
+
     }
 
 }

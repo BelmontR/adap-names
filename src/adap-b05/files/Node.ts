@@ -43,7 +43,11 @@ export class Node {
     }
 
     public rename(bn: string): void {
+        this.assertIsValidBaseName(bn, ExceptionType.PRECONDITION);
+
         this.doSetBaseName(bn);
+        
+        this.assertClassInvariants();
     }
 
     protected doSetBaseName(bn: string): void {
@@ -56,10 +60,16 @@ export class Node {
 
     /**
      * Returns all nodes in the tree that match bn
+     * Has to be overwritten
      * @param bn basename of node being searched for
      */
     public findNodes(bn: string): Set<Node> {
-        return RootNode.getRootNode().findNodes(bn);
+        //return RootNode.getRootNode().findNodes(bn);
+        let s = new Set<Node>();
+        if(this.getBaseName() == bn){
+            s.add(this);
+        }
+        return s;
     }
 
     //Has to be overwritten

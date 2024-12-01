@@ -38,15 +38,6 @@ export class RootNode extends Directory {
         AssertionDispatcher.dispatch(et, condition, "invalid base name");
     }
 
-    public findNodes(bn: string): Set<Node>{
-        this.assertIsValidBaseName(bn, ExceptionType.PRECONDITION);
-
-        let resultSet = new Set<Node>();
-        this.findNodesHelper(bn, resultSet);
-
-        return resultSet;
-    }
-
 
 
 }

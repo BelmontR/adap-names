@@ -51,4 +51,10 @@ export class File extends Node {
         return this.state;
     }
 
+    public findNodesHelper(bn: string, currentSet: Set<Node>){
+        if(this.getBaseName() == bn){
+            currentSet.add(this);
+        }
+    }
+
 }
