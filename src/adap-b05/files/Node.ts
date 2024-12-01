@@ -1,6 +1,8 @@
 import { ExceptionType, AssertionDispatcher } from "../common/AssertionDispatcher";
 import { IllegalArgumentException } from "../common/IllegalArgumentException";
 import { InvalidStateException } from "../common/InvalidStateException";
+import { ServiceFailureException } from "../common/ServiceFailureException";
+import { Exception } from "../common/Exception";
 
 import { Name } from "../names/Name";
 import { Directory } from "./Directory";
@@ -35,7 +37,15 @@ export class Node {
     }
 
     public getBaseName(): string {
-        return this.doGetBaseName();
+        let bn = this.doGetBaseName();
+        try {
+            this.assertIsValidBaseName(bn, ExceptionType.CLASS_INVARIANT);
+        } catch (error) {
+            const expception = error as Exception;
+            throw new ServiceFailureException("Failed to retrieve base name", expception);
+        }
+
+        return bn;
     }
 
     protected doGetBaseName(): string {
