@@ -6,14 +6,20 @@ import { MethodFailedException } from "../common/MethodFailedException";
 import { InvalidStateException } from "../common/InvalidStateException";
 import { Exception } from "../common/Exception";
 
+//Ich hab jetzt die Assertion-Methoden in diese Klasse geschrieben, da sie in den Folien und im Coordinate-Beispiel auch in den verwendenden Klassen implementiert waren.
+//Ich hoffe, das passt
+
 export abstract class AbstractName implements Name {
 
     protected delimiter: string = DEFAULT_DELIMITER;
+    protected hashcode: number;
 
     constructor(delimiter: string = DEFAULT_DELIMITER) {
         if(delimiter){
             this.delimiter = delimiter;
         }
+
+        this.hashcode = this.getHashCode();
     }
 
     public clone(): Name {
@@ -88,116 +94,122 @@ export abstract class AbstractName implements Name {
         return this.doGetComponent(i);
     }
 
-    public setComponent(i: number, c: string): void {
+    public setComponent(i: number, c: string): Name {
         this.assertIsNotNullOrUndefined(i);
         this.assertIsNotNegative(i);
         this.assertInBounds(i);
         this.assertIsNotNullOrUndefined(c);
 
-        let clone = this.clone();
         let oldLen = this.getNoComponents();
 
-        this.doSetComponent(i, c);
+        let returnClone = <AbstractName> this.clone();
+        returnClone.doSetComponent(i, c);
 
-        //"The method should return the object to its method-entry state" -> Wird hier gemacht
         try{
         //Postconditions
         //this.assertValueAtIndex(i, c);
         //this.assertNumberComponentsDontChange(oldLen);
 
-        MethodFailedException.assertCondition((this.getComponent(i) == c), "Postcondition failed: Component at index ${i} was not set to the expected value");
-        MethodFailedException.assertCondition((this.getNoComponents() <= oldLen), "Postcondition failed: Number of Components changed although it should not");
+        MethodFailedException.assert((returnClone.getComponent(i) == c), "Postcondition failed: Component at index ${i} was not set to the expected value");
+        MethodFailedException.assert((returnClone.getNoComponents() <= oldLen), "Postcondition failed: Number of Components changed although it should not");
 
         }
         catch(e){
-            this.restoreValidState(clone);
+            //this.restoreValidState(clone);
             throw(e);
         }
 
         //Class invariants
         this.assertClassInvarinats();
+
+        return returnClone;
     }
 
-    public insert(i:number, c: string): void{
+    public insert(i:number, c: string): Name{
         this.assertIsNotNullOrUndefined(i);
         this.assertIsNotNegative(i);
         this.assertInBounds(i);
         this.assertIsNotNullOrUndefined(c);
 
         let oldLen = this.getNoComponents();
-        let clone = this.clone();
 
-        this.doInsert(i,c);
+        let returnClone = <AbstractName> this.clone();
+        returnClone.doInsert(i,c);
 
         try{
         //Postconditions
         //this.assertValueAtIndex(i, c);
         //this.assertNumberComponentIncreased(oldLen);
 
-        MethodFailedException.assertCondition((this.getComponent(i) == c), "Postcondition failed: Component at index ${i} was not set to the expected value");
-        MethodFailedException.assertCondition((this.getNoComponents() > oldLen), "Postcondition failed: Number of Components did not increase although it should");
+        MethodFailedException.assert((returnClone.getComponent(i) == c), "Postcondition failed: Component at index ${i} was not set to the expected value");
+        MethodFailedException.assert((returnClone.getNoComponents() > oldLen), "Postcondition failed: Number of Components did not increase although it should");
 
         }
         catch(e){
-            this.restoreValidState(clone);
+            //this.restoreValidState(clone);
             throw(e);
         }
 
         //Class invariants
         this.assertClassInvarinats();
+
+        return returnClone;
     }
 
-    public append(c: string): void{
+    public append(c: string): Name{
         this.assertIsNotNullOrUndefined(c);
 
         let oldLen = this.getNoComponents();
-        let clone = this.clone();
 
-        this.doAppend(c);
+        let returnClone = <AbstractName> this.clone();
+        returnClone.doAppend(c);
 
         try{
         //Postconditions
-        let lastIndex = this.getNoComponents() -1;
+        let lastIndex = returnClone.getNoComponents() -1;
 
         //this.assertValueAtIndex(lastIndex, c);
         //this.assertNumberComponentIncreased(oldLen);
 
-        MethodFailedException.assertCondition((this.getComponent(lastIndex) == c), "Postcondition failed: Component at index ${i} was not set to the expected value");
-        MethodFailedException.assertCondition((this.getNoComponents() > oldLen), "Postcondition failed: Number of Components did not increase although it should");
+        MethodFailedException.assert((returnClone.getComponent(lastIndex) == c), "Postcondition failed: Component at index ${i} was not set to the expected value");
+        MethodFailedException.assert((returnClone.getNoComponents() > oldLen), "Postcondition failed: Number of Components did not increase although it should");
         }
         catch(e){
-            this.restoreValidState(clone);
+            //this.restoreValidState(clone);
             throw(e);
         }
 
         //Class invariants
         this.assertClassInvarinats();
+
+        return returnClone;
     }
 
-    public remove(i: number): void{
+    public remove(i: number): Name{
         this.assertIsNotNullOrUndefined(i);
         this.assertIsNotNegative(i);
         this.assertInBounds(i);
 
-        let clone = this.clone();
         let oldLen = this.getNoComponents();
 
-
-        this.doRemove(i);
+        let returnClone = <AbstractName> this.clone();
+        returnClone.doRemove(i);
 
         try{
         //Postconditions
         //this.assertNumberComponentsDecreased(oldLen);
 
-        MethodFailedException.assertCondition((this.getNoComponents() < oldLen), "Postcondition failed: Number of Components did not decrease although it should");
+        MethodFailedException.assert((returnClone.getNoComponents() == oldLen -1), "Postcondition failed: Number of Components did not decrease although it should");
         }
         catch(e){
-            this.restoreValidState(clone);
+            //this.restoreValidState(clone);
             throw(e);
         }
 
         //Class invariants
         this.assertClassInvarinats();
+
+        return returnClone;
     }
 
 
@@ -213,28 +225,31 @@ export abstract class AbstractName implements Name {
 
     abstract doRemove(i: number): void;
 
-    public concat(other: Name): void {
+    public concat(other: Name): Name {
         this.assertIsNotNullOrUndefined(other);
 
         let oldLen = this.getNoComponents() + other.getNoComponents();
-        let clone = this.clone();
+
+        let returnClone = <AbstractName> this.clone();
 
         for(let i = 0; i < other.getNoComponents(); i++){
-            this.append(other.getComponent(i));
+            returnClone.append(other.getComponent(i));
         }
 
         try{
             //Postcondition
             //this.assertNumberComponentsDontChange(oldLen);
 
-            MethodFailedException.assertCondition((this.getNoComponents() == oldLen), "Postcondition failed: Number of components changed altough it should not");
+            MethodFailedException.assert((returnClone.getNoComponents() == oldLen), "Postcondition failed: Number of components changed altough it should not");
         }
         catch(e){
-            this.restoreValidState(clone);
+            //this.restoreValidState(clone);
             throw(e);
         }
 
         this.assertClassInvarinats();
+
+        return returnClone;
     }
 
     protected restoreValidState(clone: Name){
@@ -296,6 +311,11 @@ export abstract class AbstractName implements Name {
     }
 
     protected assertClassInvarinats(): void{
+
+        if(this.getHashCode() !== this.hashcode){
+            throw new InvalidStateException("Object changed");
+        }
+
         if((this.delimiter == null) || (this.delimiter == undefined)){
             throw new InvalidStateException("Delimiter is null or not defined");
         }
