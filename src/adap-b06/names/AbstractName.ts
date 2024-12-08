@@ -12,13 +12,20 @@ import { Exception } from "../common/Exception";
 export abstract class AbstractName implements Name {
 
     protected delimiter: string = DEFAULT_DELIMITER;
+
     protected hashcode: number;
+    protected compareDelimiter: string
 
     constructor(delimiter: string = DEFAULT_DELIMITER) {
         if(delimiter){
             this.delimiter = delimiter;
         }
 
+        this.hashcode = this.getHashCode();
+        this.compareDelimiter = this.delimiter;
+    }
+
+    public updateHashcode(): void{
         this.hashcode = this.getHashCode();
     }
 
@@ -63,7 +70,7 @@ export abstract class AbstractName implements Name {
     public isEqual(other: Name): boolean {
         this.assertIsNotNullOrUndefined(other);
 
-        return this.getHashCode() == other.getHashCode();
+        return ((this.getHashCode() == other.getHashCode()) && this.delimiter == other.getDelimiterCharacter());
     }
 
     public getHashCode(): number {
@@ -104,6 +111,7 @@ export abstract class AbstractName implements Name {
 
         let returnClone = <AbstractName> this.clone();
         returnClone.doSetComponent(i, c);
+        returnClone.updateHashcode();
 
         try{
         //Postconditions
@@ -135,6 +143,7 @@ export abstract class AbstractName implements Name {
 
         let returnClone = <AbstractName> this.clone();
         returnClone.doInsert(i,c);
+        returnClone.updateHashcode();
 
         try{
         //Postconditions
@@ -163,6 +172,7 @@ export abstract class AbstractName implements Name {
 
         let returnClone = <AbstractName> this.clone();
         returnClone.doAppend(c);
+        returnClone.updateHashcode();
 
         try{
         //Postconditions
@@ -194,6 +204,7 @@ export abstract class AbstractName implements Name {
 
         let returnClone = <AbstractName> this.clone();
         returnClone.doRemove(i);
+        returnClone.updateHashcode();
 
         try{
         //Postconditions
@@ -235,6 +246,7 @@ export abstract class AbstractName implements Name {
         for(let i = 0; i < other.getNoComponents(); i++){
             returnClone.append(other.getComponent(i));
         }
+        returnClone.updateHashcode();
 
         try{
             //Postcondition
@@ -314,6 +326,10 @@ export abstract class AbstractName implements Name {
 
         if(this.getHashCode() !== this.hashcode){
             throw new InvalidStateException("Object changed");
+        }
+
+        if(this.delimiter !== this.compareDelimiter){
+            throw new InvalidStateException("Delimiter changed");
         }
 
         if((this.delimiter == null) || (this.delimiter == undefined)){

@@ -67,8 +67,8 @@ export class StringArrayName extends AbstractName {
         this.components.splice(i,1);
     }
 
-    public concat(other: Name): void {
-        super.concat(other);
+    public concat(other: Name): Name {
+        return super.concat(other);
     }
 
     protected assertClassInvarinats(): void{

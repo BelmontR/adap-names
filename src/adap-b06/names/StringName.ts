@@ -196,8 +196,8 @@ export class StringName extends AbstractName {
         this.noComponents --;
     }
 
-    public concat(other: Name): void {
-        super.concat(other);
+    public concat(other: Name): Name {
+        return super.concat(other);
     }
 
 }
