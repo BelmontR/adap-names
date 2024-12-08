@@ -10,10 +10,11 @@ export class StringArrayName extends AbstractName {
     constructor(other: string[], delimiter?: string) {
         super();
         this.components = other;
+        this.updateHashcode();
     }
 
     public clone(): Name {
-        return new StringArrayName(this.components, this.delimiter);
+        return new StringArrayName(this.copyComponents(), this.delimiter);
     }
 
     public asString(delimiter: string = this.delimiter): string {
@@ -71,11 +72,16 @@ export class StringArrayName extends AbstractName {
         return super.concat(other);
     }
 
+    protected copyComponents(): any{
+        let newComponents: string[] = [];
+        this.components.forEach(function (value) {
+            newComponents.push(value);
+        });
+        return newComponents;
+    }
+
     protected assertClassInvarinats(): void{
         super.assertClassInvarinats();
 
-        if(this.getNoComponents() !== this.components.length){
-            throw new InvalidStateException("Number of components is not equal to components.length");
-        }
     }
 }

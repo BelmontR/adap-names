@@ -25,6 +25,8 @@ export class StringName extends AbstractName {
             }
             
         }
+
+        this.updateHashcode();
     }
 
     public clone(): Name {

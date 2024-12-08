@@ -21,7 +21,7 @@ export abstract class AbstractName implements Name {
             this.delimiter = delimiter;
         }
 
-        this.hashcode = this.getHashCode();
+        this.hashcode = 0;
         this.compareDelimiter = this.delimiter;
     }
 
@@ -244,7 +244,7 @@ export abstract class AbstractName implements Name {
         let returnClone = <AbstractName> this.clone();
 
         for(let i = 0; i < other.getNoComponents(); i++){
-            returnClone.append(other.getComponent(i));
+            returnClone.doAppend(other.getComponent(i));
         }
         returnClone.updateHashcode();
 
