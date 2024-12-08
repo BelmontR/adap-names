@@ -105,6 +105,17 @@ describe("Basic StringArrayName function tests", () => {
       expect(m.asString()).toBe("a.b.c");
       expect(x.asString()).toBe("oss.cs.fau.de.a.b.c");
     });
+    it("test isEqual", () => {
+      let n: AbstractName = new StringName("a.b.c");
+      let m: AbstractName = new StringName("a.b.c");
+      expect(n.isEqual(m)).toBe(true);
+    });
+    it("test isEqual2", () => {
+      let n: AbstractName = new StringName("a.b.c");
+      let m: AbstractName = new StringArrayName(["a", "b", "c"]);
+      expect(n.isEqual(m)).toBe(true);
+
+    });
 
 
 });
